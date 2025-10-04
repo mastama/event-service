@@ -1,0 +1,21 @@
+networks:
+  default:
+    name: desa-digital-network     # join ke network yang sama
+
+services:
+  event-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: event-service
+    ports:
+      - "8082:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+
+      # DB (connect ke postgres di network yang sama)
+      DATABASE_URL: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: desa_digital
+      DATABASE_USERNAME: mastama
+      DATABASE_PASSWORD: post456
