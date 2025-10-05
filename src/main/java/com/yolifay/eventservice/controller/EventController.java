@@ -4,10 +4,7 @@ import com.yolifay.eventservice.common.Constants;
 import com.yolifay.eventservice.common.ConstantsProperties;
 import com.yolifay.eventservice.common.ResponseApiService;
 import com.yolifay.eventservice.common.ResponseApiUtil;
-import com.yolifay.eventservice.dto.EventCreateRequest;
-import com.yolifay.eventservice.dto.EventResponse;
-import com.yolifay.eventservice.dto.ParticipantResponse;
-import com.yolifay.eventservice.dto.RegisterParticipantRequest;
+import com.yolifay.eventservice.dto.*;
 import com.yolifay.eventservice.dto.pagination.BasePaging;
 import com.yolifay.eventservice.dto.pagination.PageEnvelope;
 import com.yolifay.eventservice.service.EventService;
@@ -84,6 +81,23 @@ public class EventController {
         EventResponse response = eventService.getEventById(id);
 
         log.info("Outgoing get event by id: {}", id);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                ResponseApiUtil.setResponse(
+                        HttpStatus.OK.value(),
+                        constantsProperties.getServiceId(),
+                        Constants.RESPONSE.APPROVED,
+                        response
+                )
+        );
+    }
+
+    @PutMapping(value = "/update/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<ResponseApiService<EventResponse>> updateEvent(@PathVariable UUID id, @RequestBody @Valid EventUpdateRequest req) {
+        log.info("Incoming update event by id: {}", id);
+
+        EventResponse response = eventService.updateEvent(id, req);
+
+        log.info("Outgoing update event by id: {}", id);
         return ResponseEntity.status(HttpStatus.OK).body(
                 ResponseApiUtil.setResponse(
                         HttpStatus.OK.value(),

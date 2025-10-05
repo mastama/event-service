@@ -111,4 +111,18 @@ public class GlobalExceptionHandler {
                 )
         );
     }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ResponseApiService<String>> handleUpstream5xx(IllegalStateException e) {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(
+                ResponseApiUtil.setResponse(
+                        HttpStatus.SERVICE_UNAVAILABLE.value(),
+                        constantsProperties.getServiceId(),
+                        Constants.RESPONSE.SERVICE_UNAVAILABLE,
+                        "Upstream error/timeout"
+                )
+        );
+    }
+
+
 }

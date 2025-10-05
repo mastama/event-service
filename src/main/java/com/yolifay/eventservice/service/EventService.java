@@ -1,5 +1,6 @@
 package com.yolifay.eventservice.service;
 
+import com.yolifay.eventservice.client.IdentityClientFacade;
 import com.yolifay.eventservice.dto.*;
 import com.yolifay.eventservice.dto.pagination.BasePaging;
 import com.yolifay.eventservice.dto.pagination.PageEnvelope;
@@ -32,6 +33,7 @@ import java.util.UUID;
 public class EventService {
     private final EventRepository eventRepo;
     private final EventParticipantRepository participantRepo;
+    private final IdentityClientFacade identityClientFacade;
 
     private static final String START_TIME = "startTime";
     private static final String TITLE = "title";
@@ -149,6 +151,11 @@ public class EventService {
         Event e = eventRepo.findById(eventId)
                 .orElseThrow(() -> new DataNotFoundException("Event dengan ID " + eventId + " tidak ditemukan"));
 
+        // Validate wargaNik exists in identity service
+        if (!identityClientFacade.existsWargaByNik(req.wargaNik())) {
+            throw new DataNotFoundException("Warga dengan NIK " + req.wargaNik() + " tidak ditemukan di identity service");
+        }
+
         if (participantRepo.existsByEventIdAndWargaNik(eventId, req.wargaNik())) {
             throw new ConflictException("Warga dengan NIK " + req.wargaNik() + " sudah terdaftar pada event ini");
         }
@@ -191,14 +198,17 @@ public class EventService {
         );
     }
     private static ParticipantResponse mapParticipantResponse(EventParticipant p){
-        return new ParticipantResponse(p.getId().toString(), p.getEvent().getId().toString(), p.getWargaNik());
+        return new ParticipantResponse(
+                p.getId().toString(),
+                p.getEvent().getId().toString(),
+                p.getWargaNik()
+        );
     }
 
     private String normalizeSortField(String f){
         if (f==null || f.isBlank()) return START_TIME;
         return switch (f){
             case TITLE -> TITLE;
-            case START_TIME -> START_TIME;
             case "endTime" -> "endTime";
             case LOCATION -> LOCATION;
             case "quota" -> "quota";

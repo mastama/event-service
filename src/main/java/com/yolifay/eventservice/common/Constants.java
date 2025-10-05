@@ -19,8 +19,9 @@ public class Constants {
         METHOD_NOT_ALLOWED("45", "Method Not Allowed"),
         UNSUPPORTED_MEDIA_TYPE("47", "Unsupported Media Type"),
         INVALID_INPUT("48", "Invalid Input"),
-        SERVICE_UNAVAILABLE("54", "Service Unavailable"),
-        GATEWAY_TIMEOUT("58", "Gateway Timeout"),
+        BAD_GATEWAY("52", "Bad Gateway"),
+        SERVICE_UNAVAILABLE("53", "Service Unavailable"),
+        GATEWAY_TIMEOUT("54", "Gateway Timeout"),
 
         DATA_EXISTS("15", "Data sudah ada"),
         ACCOUNT_NOT_FOUND("14", "Data tidak ditemukan"),
